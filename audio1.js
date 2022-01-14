@@ -63,6 +63,8 @@ function play() {
         wireframe: true
     });
 
+    
+
     var ball = new THREE.Mesh(icosahedronGeometry, lambertMaterial);
     ball.position.set(0, 0, 0);
     group.add(ball);
