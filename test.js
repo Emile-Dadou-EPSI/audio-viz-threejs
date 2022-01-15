@@ -39,7 +39,7 @@
 
 // animate();
 
-
+let starGeo, stars;
 var noise = new SimplexNoise();
 var vizInit = function () {
     var file = document.getElementById("thefile");
@@ -81,9 +81,27 @@ var vizInit = function () {
         var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
 
+        starGeo = new THREE.Geometry();
+        for(let i=0;i<6000; i++) {
+            star = new THREE.Vector3(
+                Math.random() * 600 - 300,
+                Math.random() * 600 - 300,
+                Math.random() * 600 - 300
+            );
+            starGeo.vertices.push(star);
+        }
+        let sprite = new THREE.TextureLoader().load('test.png');
+        let starMat = new THREE.PointsMaterial({
+            color: 0xaaaaaa,
+            size: 0.7,
+            alphaMap: sprite
+        });
+        stars = new THREE.Points(starGeo, starMat);
+        group.add(stars);
+        
         const geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 16 );
         const material = new THREE.MeshBasicMaterial( { 
-            color: 0x58172B,
+            color: 0x00ff69,
             transparent: true,
             opacity: 1,
             wireframe: true,
@@ -95,7 +113,7 @@ var vizInit = function () {
         torusKnot.position.set(0,0,0);
         group.add( torusKnot );
 
-        var ambientLight = new THREE.AmbientLight(0xaaaaaa);
+        var ambientLight = new THREE.AmbientLight(0xb45f06);
         scene.add(ambientLight);
 
         var spotLight = new THREE.SpotLight(0xffffff);
@@ -153,7 +171,8 @@ var vizInit = function () {
                 var time = window.performance.now();
                 vertex.normalize();
                 var rf = 0.00001;
-                var distance = (offset + bassFr ) + noise.noise3D(vertex.x + time *rf*7, vertex.y +  time*rf*8, vertex.z + time*rf*9) * amp * treFr;
+                //var distance = (offset + bassFr ) + noise.noise3D(vertex.x + time *rf*7, vertex.y +  time*rf*8, vertex.z + time*rf*9) * amp * treFr;
+                var distance = (offset + bassFr ) + noise.noise3D(vertex.x + time *rf, vertex.y +  time*rf, vertex.z + time*rf) * amp * treFr;
                 vertex.multiplyScalar(distance);
             });
             mesh.geometry.verticesNeedUpdate = true;
